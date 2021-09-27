@@ -23,7 +23,6 @@ class Support(models.Model):
     title = models.CharField(max_length=120)
     text = models.CharField(max_length=1200)
     timestamp = models.DateTimeField(default=datetime.utcnow)
-    user = models.ForeignKey(UserIP, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return "<Support %r>" % self.id

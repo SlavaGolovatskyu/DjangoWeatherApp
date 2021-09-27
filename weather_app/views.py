@@ -3,7 +3,7 @@ import requests as _requests
 from django.shortcuts import render
 
 from . import models
-from .forms import CityForm
+from .forms import CityForm, SupportForm
 
 
 def index(request):
@@ -60,9 +60,26 @@ def index(request):
 
 
 def support(request):
-    context = {}
-    errors = {}
+    success = {}
+
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        text = request.POST.get('text')
+        topics = models.Support.objects.filter(title=title, text=text)
+        if topics:
+            success['success'] = 'Такие темы уже были отправлены.'
+        else:
+            try:
+                support = models.Support(title=title,
+                                        text=text)
+                support.save()
+                success['success'] = 'Ваша ошибка была отправлена'
+            except:
+                success['success'] = 'Возникла ошибка при отправке'
 
 
+    form = SupportForm()
+
+    context = {'form': form, 'success': success}
 
     return render(request, 'support.html', context)
